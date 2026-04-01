@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Mail, Instagram } from "lucide-react";
+import { Instagram } from "lucide-react";
 import { toast } from "sonner";
 
 const ContactSection = () => {
