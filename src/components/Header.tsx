@@ -7,7 +7,6 @@ const navItems = [
   { label: "Galería", href: "#galeria" },
   { label: "Sobre Mí", href: "#sobre-mi" },
   { label: "Terapias", href: "#terapias" },
-  { label: "Precios", href: "#precios" },
   { label: "Contacto", href: "#contacto" },
 ];
 

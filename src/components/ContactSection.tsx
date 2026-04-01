@@ -80,10 +80,7 @@ const ContactSection = () => {
           </button>
         </form>
 
-        <div className="flex items-center justify-center gap-6 mt-10 text-muted-foreground font-body text-sm">
-          <a href="mailto:mar_con_art@gmail.com" className="flex items-center gap-2 hover:text-primary transition-colors">
-            <Mail size={16} /> mar_con_art@gmail.com
-          </a>
+        <div className="flex items-center justify-center mt-10 text-muted-foreground font-body text-sm">
           <a
             href="https://instagram.com/mar_con_art"
             target="_blank"
