@@ -22,7 +22,7 @@ const FeaturedCarousel = () => {
 
   return (
     <section className="py-16 px-4 bg-sakura-light/20">
-      <div className="container mx-auto max-w-5xl">
+      <div className="container mx-auto max-w-4xl">
         <h2 className="font-display text-2xl md:text-3xl text-center text-foreground mb-2">
           Obras Destacadas
         </h2>
@@ -31,8 +31,7 @@ const FeaturedCarousel = () => {
         </p>
 
         <div className="relative">
-          {/* Carousel */}
-          <div className="overflow-hidden rounded-xl relative aspect-[16/9] md:aspect-[21/9] bg-card">
+          <div className="overflow-hidden rounded-xl relative aspect-[4/3] md:aspect-[16/10] bg-muted/20">
             <AnimatePresence mode="wait">
               <motion.div
                 key={current}
@@ -40,12 +39,12 @@ const FeaturedCarousel = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -60 }}
                 transition={{ duration: 0.5 }}
-                className="absolute inset-0"
+                className="absolute inset-0 flex items-center justify-center"
               >
                 <img
                   src={featured[current].image}
                   alt={featured[current].title}
-                  className="w-full h-full object-cover"
+                  className="max-w-full max-h-full object-contain"
                 />
                 {/* Overlay with title */}
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
@@ -61,7 +60,6 @@ const FeaturedCarousel = () => {
             </AnimatePresence>
           </div>
 
-          {/* Navigation arrows */}
           <button
             onClick={prev}
             className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background transition-colors shadow-md"
@@ -77,7 +75,6 @@ const FeaturedCarousel = () => {
             <ChevronRight size={20} />
           </button>
 
-          {/* Dots */}
           <div className="flex justify-center gap-2 mt-5">
             {featured.map((_, i) => (
               <button

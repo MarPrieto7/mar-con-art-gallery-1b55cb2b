@@ -7,6 +7,10 @@ import paisajePueblo from "@/assets/paintings/paisaje-pueblo-acuarela.jpg";
 import picassoMadre from "@/assets/paintings/picasso-madre-hijo-pastel.jpg";
 import recogiendoFlores from "@/assets/paintings/recogiendo-flores-acrilico.jpg";
 import respiracion from "@/assets/paintings/respiracion-pastel.jpg";
+import zen from "@/assets/paintings/zen-acrilico.jpg";
+import perfilMujer from "@/assets/paintings/perfil-mujer-acrilico.jpg";
+import libelula from "@/assets/paintings/libelula-acrilico.jpg";
+import sandia from "@/assets/paintings/sandia-acuarela.jpg";
 
 export type PaintingStatus = "disponible" | "reservado" | "no-disponible";
 export type Technique = "acrílico" | "acuarela" | "pastel";
@@ -102,6 +106,42 @@ export const paintings: Painting[] = [
     image: respiracion,
     status: "disponible",
     comment: "Pastel en blanco y negro",
+  },
+  {
+    id: "10",
+    title: "Zen",
+    technique: "acrílico",
+    description: "Jarrón con ramas de cerezo en flor, estilo zen japonés",
+    image: zen,
+    status: "disponible",
+    comment: "Acrílico sobre lienzo",
+  },
+  {
+    id: "11",
+    title: "Perfil de Mujer",
+    technique: "acrílico",
+    description: "Mujer con abanico de encaje y flores en el pelo",
+    image: perfilMujer,
+    status: "disponible",
+    comment: "Acrílico sobre lienzo",
+  },
+  {
+    id: "12",
+    title: "Libélula",
+    technique: "acrílico",
+    description: "Libélula con mandalas y tonos púrpura y rosa",
+    image: libelula,
+    status: "disponible",
+    comment: "Acrílico sobre lienzo con relieves",
+  },
+  {
+    id: "13",
+    title: "Sandía",
+    technique: "acuarela",
+    description: "Trozos de sandía frescos y jugosos",
+    image: sandia,
+    status: "disponible",
+    comment: "Acuarela sobre papel",
   },
 ];
 
