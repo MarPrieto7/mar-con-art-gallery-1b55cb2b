@@ -1,8 +1,12 @@
-import painting1 from "@/assets/paintings/painting1.jpg";
-import painting2 from "@/assets/paintings/painting2.jpg";
-import painting3 from "@/assets/paintings/painting3.jpg";
-import painting4 from "@/assets/paintings/painting4.jpg";
-import painting5 from "@/assets/paintings/painting5.jpg";
+import calabazas from "@/assets/paintings/calabazas-acuarela.jpg";
+import limones from "@/assets/paintings/limones-acuarela.jpg";
+import lunaLlena from "@/assets/paintings/luna-llena-acrilico.jpg";
+import maryPoppins from "@/assets/paintings/mary-poppins-acrilico.jpg";
+import negativo from "@/assets/paintings/negativo-acrilico.jpg";
+import paisajePueblo from "@/assets/paintings/paisaje-pueblo-acuarela.jpg";
+import picassoMadre from "@/assets/paintings/picasso-madre-hijo-pastel.jpg";
+import recogiendoFlores from "@/assets/paintings/recogiendo-flores-acrilico.jpg";
+import respiracion from "@/assets/paintings/respiracion-pastel.jpg";
 
 export type PaintingStatus = "disponible" | "reservado" | "no-disponible";
 export type Technique = "acrílico" | "acuarela" | "pastel";
@@ -20,48 +24,84 @@ export interface Painting {
 export const paintings: Painting[] = [
   {
     id: "1",
-    title: "Jardín de Koi",
-    technique: "acrílico",
-    description: "Jardín zen japonés con estanque de peces koi y cerezos en flor",
-    image: painting1,
+    title: "Calabazas",
+    technique: "acuarela",
+    description: "Bodegón de calabazas con tonos cálidos otoñales",
+    image: calabazas,
     status: "disponible",
-    comment: "Acrílico sobre lienzo, 60x80cm",
+    comment: "Acuarela sobre papel",
   },
   {
     id: "2",
-    title: "Amanecer en las Montañas",
-    technique: "pastel",
-    description: "Paisaje montañoso coreano al amanecer con ramas de cerezo",
-    image: painting2,
-    status: "reservado",
-    comment: "Pastel sobre tabla, 50x70cm",
+    title: "Limones de Verano",
+    technique: "acuarela",
+    description: "Limones frescos colgando de la rama con hojas verdes",
+    image: limones,
+    status: "disponible",
+    comment: "Acuarela sobre papel",
   },
   {
     id: "3",
-    title: "Grullas al Atardecer",
-    technique: "acuarela",
-    description: "Grullas japonesas volando sobre un lago al atardecer",
-    image: painting3,
+    title: "Luna Llena",
+    technique: "acrílico",
+    description: "Velero navegando bajo la luna llena en negativo",
+    image: lunaLlena,
     status: "disponible",
-    comment: "Acuarela sobre papel, 40x50cm",
+    comment: "Acrílico sobre lienzo, técnica en negativo",
   },
   {
     id: "4",
-    title: "Sendero de Bambú",
+    title: "Mary Poppins",
     technique: "acrílico",
-    description: "Camino sereno a través de un bosque de bambú iluminado",
-    image: painting4,
-    status: "no-disponible",
-    comment: "Acrílico sobre lienzo, 70x90cm",
+    description: "Mary Poppins volando sobre los tejados de la ciudad",
+    image: maryPoppins,
+    status: "disponible",
+    comment: "Acrílico sobre lienzo",
   },
   {
     id: "5",
-    title: "Glicinas del Puente",
-    technique: "pastel",
-    description: "Cascada de glicinas sobre un puente de piedra ancestral",
-    image: painting5,
+    title: "Perfil en Negativo",
+    technique: "acrílico",
+    description: "Retrato femenino en blanco y negro con técnica en negativo",
+    image: negativo,
     status: "disponible",
-    comment: "Pastel, 45x60cm",
+    comment: "Acrílico sobre lienzo",
+  },
+  {
+    id: "6",
+    title: "Paisaje del Pueblo",
+    technique: "acuarela",
+    description: "Pueblo pintoresco junto al río con montañas al fondo",
+    image: paisajePueblo,
+    status: "disponible",
+    comment: "Acuarela sobre papel",
+  },
+  {
+    id: "7",
+    title: "Madre e Hijo (Picasso 1901)",
+    technique: "pastel",
+    description: "Reproducción de la obra de Picasso, período azul",
+    image: picassoMadre,
+    status: "reservado",
+    comment: "Pastel sobre tabla",
+  },
+  {
+    id: "8",
+    title: "Recogiendo Flores",
+    technique: "acrílico",
+    description: "Campesinas recogiendo flores en campos de colores vibrantes",
+    image: recogiendoFlores,
+    status: "disponible",
+    comment: "Acrílico sobre lienzo",
+  },
+  {
+    id: "9",
+    title: "Respiración",
+    technique: "pastel",
+    description: "Figura solitaria con paraguas en la orilla del mar",
+    image: respiracion,
+    status: "disponible",
+    comment: "Pastel en blanco y negro",
   },
 ];
 

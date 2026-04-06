@@ -23,7 +23,7 @@ const ContactSection = () => {
       return;
     }
     // mailto fallback
-    const mailtoLink = `mailto:mar_con_art@gmail.com?subject=${encodeURIComponent(
+    const mailtoLink = `mailto:mmarprietogarcia@gmail.com?subject=${encodeURIComponent(
       form.subject || "Consulta desde Mar con Art"
     )}&body=${encodeURIComponent(
       `Nombre: ${form.name}\nEmail: ${form.email}\n\n${form.message}`
