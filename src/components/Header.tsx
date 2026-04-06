@@ -24,7 +24,7 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-4 flex items-center justify-between h-16 md:h-20">
         <a href="#inicio" onClick={(e) => handleNavClick(e, "#inicio")} className="flex items-center gap-3">
-          <img src={logo} alt="Mar con Art" className="h-12 md:h-16 w-auto" />
+          <img src={logo} alt="Mar con Art" className="h-12 md:h-16 w-auto rounded-full object-cover" style={{ mixBlendMode: 'multiply' }} />
           <span className="font-display text-lg md:text-xl font-medium tracking-wide text-foreground">
             Mar con Art
           </span>
