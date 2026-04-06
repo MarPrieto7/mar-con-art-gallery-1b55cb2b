@@ -34,7 +34,7 @@ const AboutSection = () => {
           </p>
           <p>
             Además, soy terapeuta en <strong className="text-foreground">Terapia con el Arte</strong> y{" "}
-            <strong className="text-foreground">acompañante en procesos de duelo y pérdida</strong>,
+            Terapeuta como <strong className="text-foreground">Acompañante en procesos de Duelo y pérdida</strong>,
             ayudando a las personas a encontrar sanación y expresión a través de la creación artística.
           </p>
         </div>
