@@ -3,7 +3,6 @@ import HeroSection from "@/components/HeroSection";
 import FeaturedCarousel from "@/components/FeaturedCarousel";
 import GallerySection from "@/components/GallerySection";
 import AboutSection from "@/components/AboutSection";
-import TherapySection from "@/components/TherapySection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 
@@ -14,7 +13,6 @@ const Index = () => (
     <FeaturedCarousel />
     <GallerySection />
     <AboutSection />
-    <TherapySection />
     <ContactSection />
     <Footer />
   </div>

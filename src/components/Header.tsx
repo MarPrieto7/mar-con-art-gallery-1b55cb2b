@@ -1,24 +1,44 @@
 import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import logo from "@/assets/logo-mar-con-art.png";
 import { Instagram, Menu, X } from "lucide-react";
 
-const navItems = [
-  { label: "Inicio", href: "#inicio" },
-  { label: "Galería", href: "#galeria" },
-  { label: "Sobre Mí", href: "#sobre-mi" },
-  { label: "Terapias", href: "#terapias" },
-  { label: "Contacto", href: "#contacto" },
-];
-
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isHome = location.pathname === "/";
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMenuOpen(false);
+
+    if (href === "/terapias") {
+      navigate("/terapias");
+      return;
+    }
+
+    if (!isHome) {
+      navigate("/");
+      setTimeout(() => {
+        const el = document.querySelector(href);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+      return;
+    }
+
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
+
+  const navItems = [
+    { label: "Inicio", href: "#inicio" },
+    { label: "Galería", href: "#galeria" },
+    { label: "Sobre Mí", href: "#sobre-mi" },
+    { label: "Terapias", href: "/terapias" },
+    { label: "Contacto", href: "#contacto" },
+  ];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">

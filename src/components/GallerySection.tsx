@@ -14,6 +14,7 @@ const statusColors: Record<string, string> = {
   disponible: "bg-sage/30 text-secondary-foreground",
   reservado: "bg-gold/30 text-foreground",
   "no-disponible": "bg-muted text-muted-foreground",
+  vendido: "bg-destructive/20 text-destructive-foreground",
 };
 
 const LightboxModal = ({ painting, onClose }: { painting: Painting; onClose: () => void }) => {
@@ -57,7 +58,12 @@ const LightboxModal = ({ painting, onClose }: { painting: Painting; onClose: () 
         />
         <div className="bg-background rounded-b-lg p-4 mt-0">
           <h3 className="font-display text-lg font-medium text-foreground">{painting.title}</h3>
-          <p className="text-sm text-primary font-body capitalize">{painting.technique}</p>
+          <div className="flex items-center gap-3 mt-1">
+            <p className="text-sm text-primary font-body capitalize">{painting.technique}</p>
+            <span className={`px-3 py-0.5 rounded-full text-xs font-body font-semibold ${statusColors[painting.status]}`}>
+              {statusLabels[painting.status]}
+            </span>
+          </div>
           {painting.comment && <p className="text-xs text-muted-foreground font-body mt-1 italic">{painting.comment}</p>}
         </div>
       </motion.div>
@@ -116,7 +122,7 @@ const GallerySection = () => {
   const [lightbox, setLightbox] = useState<Painting | null>(null);
 
   const filtered = filter === "todas" ? paintings : paintings.filter((p) => p.technique === filter);
-  const displayed = showAll ? filtered : filtered.slice(0, 2);
+  const displayed = showAll ? filtered : filtered.slice(0, 6);
 
   return (
     <>
@@ -143,7 +149,7 @@ const GallerySection = () => {
             ))}
           </div>
 
-          <div className="flex flex-wrap justify-center gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
             <AnimatePresence>
               {displayed.map((painting) => (
                 <PaintingCard key={painting.id} painting={painting} onOpen={() => setLightbox(painting)} />
@@ -151,13 +157,13 @@ const GallerySection = () => {
             </AnimatePresence>
           </div>
 
-          {!showAll && filtered.length > 2 && (
+          {!showAll && filtered.length > 6 && (
             <div className="text-center mt-10">
               <button
                 onClick={() => setShowAll(true)}
                 className="px-8 py-3 rounded-full bg-card text-foreground font-body font-medium border border-border hover:bg-sakura-light hover:border-primary transition-colors"
               >
-                Ver más cuadros ({filtered.length - 2} más)
+                Ver más cuadros ({filtered.length - 6} más)
               </button>
             </div>
           )}

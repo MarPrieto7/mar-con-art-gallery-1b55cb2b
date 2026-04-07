@@ -11,8 +11,18 @@ import zen from "@/assets/paintings/zen-acrilico.jpg";
 import perfilMujer from "@/assets/paintings/perfil-mujer-acrilico.jpg";
 import libelula from "@/assets/paintings/libelula-acrilico.jpg";
 import sandia from "@/assets/paintings/sandia-acuarela.jpg";
+import mindfulness from "@/assets/paintings/mindfulness-acrilico.jpg";
+import nieblaMontanas from "@/assets/paintings/niebla-montanas-pastel.jpg";
+import orquideas from "@/assets/paintings/orquideas-acuarela.jpg";
+import auroraBoreal from "@/assets/paintings/aurora-boreal-pastel.jpg";
+import berenjena from "@/assets/paintings/berenjena-acuarela.jpg";
+import espigasVerano from "@/assets/paintings/espigas-verano-pastel.jpg";
+import marBravo from "@/assets/paintings/mar-bravo-pastel.jpg";
+import ladybug from "@/assets/paintings/ladybug-pastel.jpg";
+import lagoInvierno from "@/assets/paintings/lago-invierno-pastel.jpg";
+import lagoArboles from "@/assets/paintings/lago-arboles-pastel.jpg";
 
-export type PaintingStatus = "disponible" | "reservado" | "no-disponible";
+export type PaintingStatus = "disponible" | "reservado" | "no-disponible" | "vendido";
 export type Technique = "acrílico" | "acuarela" | "pastel";
 
 export interface Painting {
@@ -143,10 +153,101 @@ export const paintings: Painting[] = [
     status: "disponible",
     comment: "Acuarela sobre papel",
   },
+  {
+    id: "14",
+    title: "Mindfulness",
+    technique: "acrílico",
+    description: "Figura contemplando el atardecer desde un embarcadero",
+    image: mindfulness,
+    status: "disponible",
+    comment: "Acrílico sobre lienzo",
+  },
+  {
+    id: "15",
+    title: "Niebla entre Montañas",
+    technique: "pastel",
+    description: "Paisaje de montañas envueltas en niebla con luna y bambú",
+    image: nieblaMontanas,
+    status: "disponible",
+    comment: "Pastel sobre papel",
+  },
+  {
+    id: "16",
+    title: "Orquídeas",
+    technique: "acuarela",
+    description: "Delicadas orquídeas blancas con detalles botánicos",
+    image: orquideas,
+    status: "disponible",
+    comment: "Acuarela sobre papel",
+  },
+  {
+    id: "17",
+    title: "Aurora Boreal",
+    technique: "pastel",
+    description: "Árbol solitario bajo la aurora boreal entre montañas",
+    image: auroraBoreal,
+    status: "disponible",
+    comment: "Pastel sobre papel",
+  },
+  {
+    id: "18",
+    title: "Berenjena",
+    technique: "acuarela",
+    description: "Berenjena con salpicaduras de color, estilo botánico",
+    image: berenjena,
+    status: "disponible",
+    comment: "Acuarela sobre papel",
+  },
+  {
+    id: "19",
+    title: "Espigas de Verano",
+    technique: "pastel",
+    description: "Espigas de trigo iluminadas por la luna en tonos púrpura",
+    image: espigasVerano,
+    status: "disponible",
+    comment: "Pastel sobre papel",
+  },
+  {
+    id: "20",
+    title: "La Mar de Bravo",
+    technique: "pastel",
+    description: "Faro solitario entre olas bravas y vegetación costera",
+    image: marBravo,
+    status: "vendido",
+    comment: "Pastel sobre papel",
+  },
+  {
+    id: "21",
+    title: "Ladybug",
+    technique: "pastel",
+    description: "Mariquita sobre una espiga en un paisaje difuminado",
+    image: ladybug,
+    status: "disponible",
+    comment: "Pastel sobre papel",
+  },
+  {
+    id: "22",
+    title: "Lago en Invierno",
+    technique: "pastel",
+    description: "Árbol desnudo junto al lago con montañas nevadas al atardecer",
+    image: lagoInvierno,
+    status: "disponible",
+    comment: "Pastel sobre papel",
+  },
+  {
+    id: "23",
+    title: "Lago y Árboles",
+    technique: "pastel",
+    description: "Isla de árboles reflejada en un lago al atardecer",
+    image: lagoArboles,
+    status: "disponible",
+    comment: "Pastel sobre papel",
+  },
 ];
 
 export const statusLabels: Record<PaintingStatus, string> = {
   disponible: "Disponible",
   reservado: "Reservado",
   "no-disponible": "No disponible",
+  vendido: "Vendido",
 };
