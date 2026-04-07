@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Heart, Palette } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const TherapySection = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -14,14 +16,18 @@ const TherapySection = () => {
     return () => observer.disconnect();
   }, []);
 
+  const handleContactClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate("/");
+    setTimeout(() => {
+      const el = document.querySelector("#contacto");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 150);
+  };
+
   return (
     <section id="terapias" className="py-20 px-4 bg-background">
       <div ref={ref} className={`container mx-auto max-w-5xl scroll-fade-in ${visible ? "visible" : ""}`}>
-        <h2 className="font-display text-3xl md:text-4xl text-center text-foreground mb-4">Talleres y Terapias</h2>
-        <p className="text-center text-muted-foreground font-body mb-12 max-w-2xl mx-auto">
-          El arte como camino de sanación y expresión emocional
-        </p>
-
         <div className="grid md:grid-cols-2 gap-8">
           {/* Art Therapy */}
           <div className="bg-card rounded-lg p-8 shadow-md hover:shadow-lg transition-shadow border border-border">
@@ -35,11 +41,8 @@ const TherapySection = () => {
               exploramos emociones, liberamos tensiones y encontramos nuevas formas de expresión.
             </p>
             <a
-              href="#contacto"
-              onClick={(e) => {
-                e.preventDefault();
-                document.querySelector("#contacto")?.scrollIntoView({ behavior: "smooth" });
-              }}
+              href="/#contacto"
+              onClick={handleContactClick}
               className="inline-block mt-5 text-primary font-body font-medium hover:underline"
             >
               Solicitar información →
@@ -60,11 +63,8 @@ const TherapySection = () => {
               honrar los recuerdos y encontrar poco a poco un camino de aceptación y paz interior.
             </p>
             <a
-              href="#contacto"
-              onClick={(e) => {
-                e.preventDefault();
-                document.querySelector("#contacto")?.scrollIntoView({ behavior: "smooth" });
-              }}
+              href="/#contacto"
+              onClick={handleContactClick}
               className="inline-block mt-5 text-primary font-body font-medium hover:underline"
             >
               Solicitar información →
