@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 
 import kintsugi1 from "@/assets/therapy/kintsugi-1.jpg";
-import kintsugi2 from "@/assets/therapy/kintsugi-2.jpg";
+
 import artTherapy from "@/assets/therapy/art-therapy.jpg";
 import meditacion from "@/assets/therapy/meditacion.jpg";
 import dueloArte from "@/assets/therapy/duelo-arte.jpg";
@@ -16,7 +16,7 @@ interface GalleryItem {
 
 const items: GalleryItem[] = [
   { image: kintsugi1, title: "Kintsugi — El arte de reparar", description: "La belleza de lo imperfecto: las grietas reparadas con oro nos enseñan que nuestras heridas son parte de nuestra historia" },
-  { image: kintsugi2, title: "Kintsugi — Proceso de sanación", description: "Cada grieta rellenada con oro representa un paso en el camino de la recuperación y la aceptación" },
+  
   { image: artTherapy, title: "Terapia con el Arte", description: "El proceso creativo como herramienta de autoconocimiento y bienestar emocional" },
   { image: meditacion, title: "Meditación y Mindfulness", description: "Conectar con el momento presente a través de la calma y la contemplación" },
   { image: dueloArte, title: "Expresión Emocional", description: "Transformar el dolor en belleza a través del color y la creación artística" },
