@@ -209,7 +209,7 @@ export const paintings: Painting[] = [
   },
   {
     id: "20",
-    title: "La Mar de Bravo",
+    title: "El Faro",
     technique: "pastel",
     description: "Faro solitario entre olas bravas y vegetación costera",
     image: marBravo,
