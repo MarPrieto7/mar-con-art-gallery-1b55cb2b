@@ -42,7 +42,7 @@ export const paintings: Painting[] = [
     technique: "acuarela",
     description: "Bodegón de calabazas con tonos cálidos otoñales",
     image: calabazas,
-    status: "disponible",
+    status: "vendido",
     comment: "Acuarela sobre papel",
   },
   {

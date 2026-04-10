@@ -10,11 +10,11 @@ const techniqueFilters: { label: string; value: Technique | "todas" }[] = [
   { label: "Pastel", value: "pastel" },
 ];
 
-const statusColors: Record<string, string> = {
-  disponible: "bg-sage/30 text-secondary-foreground",
-  reservado: "bg-gold/30 text-foreground",
-  "no-disponible": "bg-muted text-muted-foreground",
-  vendido: "bg-destructive/20 text-destructive-foreground",
+const statusDotColors: Record<string, string> = {
+  disponible: "bg-green-500",
+  reservado: "bg-yellow-500",
+  "no-disponible": "bg-gray-400",
+  vendido: "bg-red-500",
 };
 
 const LightboxModal = ({ painting, onClose }: { painting: Painting; onClose: () => void }) => {
