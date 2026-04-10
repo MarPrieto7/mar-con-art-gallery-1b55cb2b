@@ -60,8 +60,9 @@ const LightboxModal = ({ painting, onClose }: { painting: Painting; onClose: () 
           <h3 className="font-display text-lg font-medium text-foreground">{painting.title}</h3>
           <div className="flex items-center gap-3 mt-1">
             <p className="text-sm text-primary font-body capitalize">{painting.technique}</p>
-            <span className={`px-3 py-0.5 rounded-full text-xs font-body font-semibold ${statusColors[painting.status]}`}>
-              {statusLabels[painting.status]}
+            <span className="flex items-center gap-1.5">
+              <span className={`inline-block w-2.5 h-2.5 rounded-full ${statusDotColors[painting.status]}`} />
+              <span className="text-xs text-muted-foreground font-body">{statusLabels[painting.status]}</span>
             </span>
           </div>
           {painting.comment && <p className="text-xs text-muted-foreground font-body mt-1 italic">{painting.comment}</p>}
@@ -100,8 +101,9 @@ const PaintingCard = ({ painting, onOpen }: { painting: Painting; onOpen: () => 
           loading="lazy"
           className="w-full h-full object-contain bg-muted/30 group-hover:scale-105 transition-transform duration-500"
         />
-        <span className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-body font-semibold ${statusColors[painting.status]}`}>
-          {statusLabels[painting.status]}
+        <span className="absolute top-3 right-3 flex items-center gap-1.5 bg-background/80 backdrop-blur-sm px-2.5 py-1 rounded-full">
+          <span className={`inline-block w-2.5 h-2.5 rounded-full ${statusDotColors[painting.status]}`} />
+          <span className="text-xs font-body font-medium text-foreground">{statusLabels[painting.status]}</span>
         </span>
       </div>
       <div className="p-4">
