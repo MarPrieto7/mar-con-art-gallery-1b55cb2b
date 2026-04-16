@@ -33,6 +33,7 @@ export interface Painting {
   image: string;
   status: PaintingStatus;
   comment?: string;
+  price?: number;
 }
 
 export const paintings: Painting[] = [

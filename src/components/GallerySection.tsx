@@ -66,6 +66,7 @@ const LightboxModal = ({ painting, onClose }: { painting: Painting; onClose: () 
             </span>
           </div>
           {painting.comment && <p className="text-xs text-muted-foreground font-body mt-1 italic">{painting.comment}</p>}
+          {painting.price && <p className="text-sm font-body font-semibold text-foreground mt-2">{painting.price} €</p>}
         </div>
       </motion.div>
     </motion.div>
