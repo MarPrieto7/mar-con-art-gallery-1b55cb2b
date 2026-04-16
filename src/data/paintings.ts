@@ -33,6 +33,7 @@ export interface Painting {
   image: string;
   status: PaintingStatus;
   comment?: string;
+  price?: number;
 }
 
 export const paintings: Painting[] = [
@@ -53,6 +54,7 @@ export const paintings: Painting[] = [
     image: limones,
     status: "disponible",
     comment: "Acuarela sobre papel",
+    price: 25,
   },
   {
     id: "3",
@@ -62,6 +64,7 @@ export const paintings: Painting[] = [
     image: lunaLlena,
     status: "disponible",
     comment: "Acrílico sobre lienzo, técnica en negativo",
+    price: 70,
   },
   {
     id: "4",
@@ -71,6 +74,7 @@ export const paintings: Painting[] = [
     image: maryPoppins,
     status: "disponible",
     comment: "Acrílico sobre lienzo",
+    price: 70,
   },
   {
     id: "5",
@@ -80,6 +84,7 @@ export const paintings: Painting[] = [
     image: negativo,
     status: "disponible",
     comment: "Acrílico sobre lienzo",
+    price: 70,
   },
   {
     id: "6",
@@ -89,6 +94,7 @@ export const paintings: Painting[] = [
     image: paisajePueblo,
     status: "disponible",
     comment: "Acuarela sobre papel",
+    price: 25,
   },
   {
     id: "7",
@@ -98,6 +104,7 @@ export const paintings: Painting[] = [
     image: picassoMadre,
     status: "reservado",
     comment: "Pastel sobre tabla",
+    price: 225,
   },
   {
     id: "8",
@@ -107,6 +114,7 @@ export const paintings: Painting[] = [
     image: recogiendoFlores,
     status: "disponible",
     comment: "Acrílico sobre lienzo",
+    price: 70,
   },
   {
     id: "9",
@@ -116,6 +124,7 @@ export const paintings: Painting[] = [
     image: respiracion,
     status: "disponible",
     comment: "Pastel en blanco y negro",
+    price: 30,
   },
   {
     id: "10",
@@ -125,6 +134,7 @@ export const paintings: Painting[] = [
     image: zen,
     status: "disponible",
     comment: "Acrílico sobre lienzo",
+    price: 70,
   },
   {
     id: "11",
@@ -134,6 +144,7 @@ export const paintings: Painting[] = [
     image: perfilMujer,
     status: "disponible",
     comment: "Acrílico sobre lienzo",
+    price: 70,
   },
   {
     id: "12",
@@ -143,6 +154,7 @@ export const paintings: Painting[] = [
     image: libelula,
     status: "disponible",
     comment: "Acrílico sobre lienzo con relieves",
+    price: 70,
   },
   {
     id: "13",
@@ -152,6 +164,7 @@ export const paintings: Painting[] = [
     image: sandia,
     status: "disponible",
     comment: "Acuarela sobre papel",
+    price: 25,
   },
   {
     id: "14",
@@ -161,6 +174,7 @@ export const paintings: Painting[] = [
     image: mindfulness,
     status: "disponible",
     comment: "Acrílico sobre lienzo",
+    price: 95,
   },
   {
     id: "15",
@@ -170,6 +184,7 @@ export const paintings: Painting[] = [
     image: nieblaMontanas,
     status: "disponible",
     comment: "Pastel sobre papel",
+    price: 25,
   },
   {
     id: "16",
@@ -179,6 +194,7 @@ export const paintings: Painting[] = [
     image: orquideas,
     status: "disponible",
     comment: "Acuarela sobre papel",
+    price: 25,
   },
   {
     id: "17",
@@ -188,6 +204,7 @@ export const paintings: Painting[] = [
     image: auroraBoreal,
     status: "disponible",
     comment: "Pastel sobre papel",
+    price: 45,
   },
   {
     id: "18",
@@ -197,6 +214,7 @@ export const paintings: Painting[] = [
     image: berenjena,
     status: "disponible",
     comment: "Acuarela sobre papel",
+    price: 25,
   },
   {
     id: "19",
@@ -206,6 +224,7 @@ export const paintings: Painting[] = [
     image: espigasVerano,
     status: "disponible",
     comment: "Pastel sobre papel",
+    price: 225,
   },
   {
     id: "20",
@@ -213,17 +232,19 @@ export const paintings: Painting[] = [
     technique: "pastel",
     description: "Faro solitario entre olas bravas y vegetación costera",
     image: marBravo,
-    status: "vendido",
+    status: "reservado",
     comment: "Pastel sobre papel",
+    price: 20,
   },
   {
     id: "21",
-    title: "Ladybug",
+    title: "Tardes de Verano",
     technique: "pastel",
     description: "Mariquita sobre una espiga en un paisaje difuminado",
     image: ladybug,
     status: "disponible",
     comment: "Pastel sobre papel",
+    price: 20,
   },
   {
     id: "22",
@@ -233,6 +254,7 @@ export const paintings: Painting[] = [
     image: lagoInvierno,
     status: "disponible",
     comment: "Pastel sobre papel",
+    price: 45,
   },
   {
     id: "23",
@@ -242,6 +264,7 @@ export const paintings: Painting[] = [
     image: lagoArboles,
     status: "disponible",
     comment: "Pastel sobre papel",
+    price: 30,
   },
 ];
 
