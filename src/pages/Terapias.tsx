@@ -41,6 +41,7 @@ const Terapias = () => {
     </div>
     <Footer />
   </div>
-);
+  );
+};
 
 export default Terapias;
