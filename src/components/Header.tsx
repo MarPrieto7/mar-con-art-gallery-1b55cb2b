@@ -16,6 +16,7 @@ const Header = () => {
 
     if (href === "/terapias") {
       navigate("/terapias");
+      window.scrollTo({ top: 0, behavior: "auto" });
       return;
     }
 

@@ -1,10 +1,16 @@
+import { useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TherapySection from "@/components/TherapySection";
 import TherapyGallery from "@/components/TherapyGallery";
 import therapyHero from "@/assets/therapy-hero.jpg";
 
-const Terapias = () => (
+const Terapias = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, []);
+
+  return (
   <div className="cursor-paintbrush min-h-screen">
     <Header />
     <div className="pt-20">
@@ -35,6 +41,7 @@ const Terapias = () => (
     </div>
     <Footer />
   </div>
-);
+  );
+};
 
 export default Terapias;

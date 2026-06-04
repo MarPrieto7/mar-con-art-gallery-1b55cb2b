@@ -21,6 +21,7 @@ import marBravo from "@/assets/paintings/mar-bravo-pastel.jpg";
 import ladybug from "@/assets/paintings/ladybug-pastel.jpg";
 import lagoInvierno from "@/assets/paintings/lago-invierno-pastel.jpg";
 import lagoArboles from "@/assets/paintings/lago-arboles-pastel.jpg";
+import refugioLuz from "@/assets/paintings/refugio-luz-acuarela.jpg";
 
 export type PaintingStatus = "disponible" | "reservado" | "no-disponible" | "vendido";
 export type Technique = "acrílico" | "acuarela" | "pastel";
@@ -265,6 +266,16 @@ export const paintings: Painting[] = [
     status: "disponible",
     comment: "Pastel sobre papel",
     price: 30,
+  },
+  {
+    id: "24",
+    title: "Refugio de Luz",
+    technique: "acuarela",
+    description: "Pueblo italiano con campanario y puente de piedra bajo cielo sereno",
+    image: refugioLuz,
+    status: "disponible",
+    comment: "Acuarela sobre papel",
+    price: 25,
   },
 ];
 

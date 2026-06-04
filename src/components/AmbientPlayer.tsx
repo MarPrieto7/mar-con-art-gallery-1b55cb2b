@@ -67,12 +67,12 @@ const AmbientPlayer = () => {
           fadeTo(volume);
         }).catch(() => {
           setNeedsGesture(true);
-          setEnabled(false);
         });
       } else {
         fadeTo(volume);
       }
     } else {
+      setNeedsGesture(false);
       fadeTo(0, () => a.pause());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -92,13 +92,36 @@ const AmbientPlayer = () => {
     } catch {}
   }, [enabled, volume]);
 
+  const handleToggle = () => {
+    if (needsGesture) {
+      const a = audioRef.current;
+      if (a) {
+        a.play().then(() => {
+          setNeedsGesture(false);
+          setEnabled(true);
+          fadeTo(volume);
+        }).catch(() => {});
+      }
+      return;
+    }
+    setEnabled((v) => !v);
+  };
+
   return (
     <div
-      className="fixed bottom-5 right-5 z-[100] flex items-center gap-2"
+      className="fixed bottom-5 right-5 z-[100] flex items-end gap-2"
       onMouseEnter={() => setShowSlider(true)}
       onMouseLeave={() => setShowSlider(false)}
     >
-      {(showSlider || needsGesture) && enabled && (
+      {needsGesture && (
+        <div className="absolute bottom-14 right-0 bg-background/95 backdrop-blur-md border border-border rounded-2xl px-4 py-2.5 shadow-lg max-w-[240px] animate-fade-in">
+          <p className="text-xs font-body text-foreground leading-snug">
+            🎨 Toca el icono para activar la experiencia sonora
+          </p>
+          <span className="absolute -bottom-1.5 right-5 w-3 h-3 rotate-45 bg-background border-r border-b border-border" />
+        </div>
+      )}
+      {showSlider && enabled && !needsGesture && (
         <div className="bg-background/90 backdrop-blur-md border border-border rounded-full px-3 py-2 shadow-md flex items-center gap-2 animate-fade-in">
           <Volume2 size={14} className="text-muted-foreground" />
           <input
@@ -114,17 +137,17 @@ const AmbientPlayer = () => {
         </div>
       )}
       <button
-        onClick={() => setEnabled((v) => !v)}
+        onClick={handleToggle}
         aria-label={enabled ? "Silenciar música ambiente" : "Activar experiencia sonora"}
         title={enabled ? "Silenciar" : "🎨 Activar experiencia sonora"}
         className={`relative h-12 w-12 rounded-full border border-border bg-background/90 backdrop-blur-md shadow-md flex items-center justify-center transition-all hover:scale-105 hover:bg-primary/10 ${
-          enabled ? "text-primary" : "text-muted-foreground"
+          enabled && !needsGesture ? "text-primary" : "text-muted-foreground"
         }`}
       >
-        {enabled ? <Waves size={20} /> : <VolumeX size={20} />}
-        {enabled && (
-          <span className="absolute inset-0 rounded-full border border-primary/40 animate-ping" />
-        )}
+        {enabled && !needsGesture ? <Waves size={20} /> : <VolumeX size={20} />}
+        {(enabled && !needsGesture) || needsGesture ? (
+          <span className={`absolute inset-0 rounded-full border ${needsGesture ? "border-sakura-deep/60" : "border-primary/40"} animate-ping`} />
+        ) : null}
       </button>
     </div>
   );
