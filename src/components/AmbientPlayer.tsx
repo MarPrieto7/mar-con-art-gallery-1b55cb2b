@@ -18,8 +18,12 @@ const loadPrefs = (): Saved => {
 
 const AmbientPlayer = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const ctxRef = useRef<AudioContext | null>(null);
+  const gainRef = useRef<GainNode | null>(null);
   const fadeRef = useRef<number | null>(null);
   const volumeRef = useRef<number>(INITIAL_VOLUME);
+  const wiredRef = useRef<boolean>(false);
+
   const [prefs] = useState<Saved>(loadPrefs);
   const [enabled, setEnabled] = useState(false);
   const [volume, setVolume] = useState(prefs.volume);
@@ -28,43 +32,75 @@ const AmbientPlayer = () => {
 
   volumeRef.current = volume > 0 ? volume : INITIAL_VOLUME;
 
-  // Init audio element once + attempt autoplay if previously enabled
+  // Create audio element once (no autoplay attempt — iOS requires gesture)
   useEffect(() => {
-    const a = new Audio(audioAsset.url);
+    const a = new Audio();
+    a.src = audioAsset.url;
     a.loop = true;
     a.preload = "auto";
-    a.volume = 0;
+    a.crossOrigin = "anonymous";
+    (a as any).playsInline = true;
+    a.setAttribute("playsinline", "");
+    a.setAttribute("webkit-playsinline", "");
+    a.volume = 1; // iOS ignores this; we control via WebAudio gain
     audioRef.current = a;
 
-    if (prefs.enabled) {
-      const p = a.play();
-      if (p && typeof p.then === "function") {
-        p.then(() => {
-          setEnabled(true);
-          fadeTo(volumeRef.current);
-        }).catch(() => {
-          setNeedsGesture(true);
-        });
-      }
-    }
+    // If user previously enabled it, surface the gesture hint so first tap starts audio
+    if (prefs.enabled) setNeedsGesture(true);
 
     return () => {
       a.pause();
       audioRef.current = null;
       if (fadeRef.current) window.clearInterval(fadeRef.current);
+      if (ctxRef.current) {
+        ctxRef.current.close().catch(() => {});
+        ctxRef.current = null;
+        gainRef.current = null;
+      }
+      wiredRef.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fadeTo = (target: number, onDone?: () => void) => {
+  const ensureGraph = () => {
     const a = audioRef.current;
-    if (!a) return;
+    if (!a) return null;
+    if (!ctxRef.current) {
+      const Ctx: typeof AudioContext =
+        (window as any).AudioContext || (window as any).webkitAudioContext;
+      if (!Ctx) return null;
+      ctxRef.current = new Ctx();
+    }
+    const ctx = ctxRef.current!;
+    if (!gainRef.current) {
+      gainRef.current = ctx.createGain();
+      gainRef.current.gain.value = 0;
+      gainRef.current.connect(ctx.destination);
+    }
+    if (!wiredRef.current) {
+      try {
+        const src = ctx.createMediaElementSource(a);
+        src.connect(gainRef.current);
+        wiredRef.current = true;
+      } catch {
+        // already wired
+        wiredRef.current = true;
+      }
+    }
+    return { ctx, gain: gainRef.current };
+  };
+
+  const fadeTo = (target: number, onDone?: () => void) => {
+    const gain = gainRef.current;
+    const a = audioRef.current;
     if (fadeRef.current) window.clearInterval(fadeRef.current);
-    const start = a.volume;
+    const start = gain ? gain.gain.value : a?.volume ?? 0;
     const startTime = performance.now();
     fadeRef.current = window.setInterval(() => {
       const t = Math.min(1, (performance.now() - startTime) / FADE_MS);
-      a.volume = start + (target - start) * t;
+      const v = start + (target - start) * t;
+      if (gain) gain.gain.value = v;
+      else if (a) a.volume = v;
       if (t >= 1) {
         if (fadeRef.current) window.clearInterval(fadeRef.current);
         fadeRef.current = null;
@@ -75,9 +111,9 @@ const AmbientPlayer = () => {
 
   // Live volume change while playing
   useEffect(() => {
-    const a = audioRef.current;
-    if (!a) return;
-    if (enabled && !fadeRef.current) a.volume = volume;
+    if (!enabled || fadeRef.current) return;
+    if (gainRef.current) gainRef.current.gain.value = volume;
+    else if (audioRef.current) audioRef.current.volume = volume;
   }, [volume, enabled]);
 
   // Persist
@@ -91,7 +127,7 @@ const AmbientPlayer = () => {
     const a = audioRef.current;
     if (!a) return;
 
-    // If currently playing -> pause
+    // Pause
     if (enabled) {
       fadeTo(0, () => a.pause());
       setEnabled(false);
@@ -99,23 +135,28 @@ const AmbientPlayer = () => {
       return;
     }
 
-    // Not playing: try to start NOW, inside user gesture
-    a.volume = 0;
-    const target = volumeRef.current;
+    // Start — must run synchronously inside the gesture for iOS
+    const graph = ensureGraph();
+    if (graph?.ctx.state === "suspended") {
+      graph.ctx.resume().catch(() => {});
+    }
+    if (graph?.gain) graph.gain.gain.value = 0;
+    else a.volume = 0;
+
+    const target = volumeRef.current || INITIAL_VOLUME;
     const p = a.play();
+    const onOk = () => {
+      setEnabled(true);
+      setNeedsGesture(false);
+      fadeTo(target);
+    };
     if (p && typeof p.then === "function") {
-      p.then(() => {
-        setEnabled(true);
-        setNeedsGesture(false);
-        fadeTo(target);
-      }).catch(() => {
+      p.then(onOk).catch(() => {
         setNeedsGesture(true);
         setEnabled(false);
       });
     } else {
-      setEnabled(true);
-      setNeedsGesture(false);
-      fadeTo(target);
+      onOk();
     }
   };
 
@@ -160,7 +201,11 @@ const AmbientPlayer = () => {
       >
         {enabled ? <Waves size={20} /> : <VolumeX size={20} />}
         {showPulse && (
-          <span className={`absolute inset-0 rounded-full border ${needsGesture && !enabled ? "border-sakura-deep/60" : "border-primary/40"} animate-ping`} />
+          <span
+            className={`absolute inset-0 rounded-full border ${
+              needsGesture && !enabled ? "border-sakura-deep/60" : "border-primary/40"
+            } animate-ping`}
+          />
         )}
       </button>
     </div>
