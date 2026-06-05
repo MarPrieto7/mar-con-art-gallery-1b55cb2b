@@ -5,6 +5,7 @@ import audioAsset from "@/assets/audio/mar-con-art-ambient.mp3.asset.json";
 const STORAGE_KEY = "marconart-audio";
 const INITIAL_VOLUME = 0.15;
 const FADE_MS = 1200;
+const AUDIO_SRC = new URL(audioAsset.url, "https://marconart.lovable.app").href;
 
 type Saved = { enabled: boolean; volume: number };
 
@@ -12,17 +13,17 @@ const loadPrefs = (): Saved => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return { enabled: false, volume: INITIAL_VOLUME, ...JSON.parse(raw) };
-  } catch {}
+  } catch {
+    return { enabled: false, volume: INITIAL_VOLUME };
+  }
   return { enabled: false, volume: INITIAL_VOLUME };
 };
 
 const AmbientPlayer = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const ctxRef = useRef<AudioContext | null>(null);
-  const gainRef = useRef<GainNode | null>(null);
   const fadeRef = useRef<number | null>(null);
   const volumeRef = useRef<number>(INITIAL_VOLUME);
-  const wiredRef = useRef<boolean>(false);
+  const ignoreClickRef = useRef(false);
 
   const [prefs] = useState<Saved>(loadPrefs);
   const [enabled, setEnabled] = useState(false);
@@ -32,17 +33,18 @@ const AmbientPlayer = () => {
 
   volumeRef.current = volume > 0 ? volume : INITIAL_VOLUME;
 
-  // Create audio element once (no autoplay attempt — iOS requires gesture)
+  // Create audio element once (no autoplay attempt — iOS/Safari requires gesture)
   useEffect(() => {
     const a = new Audio();
-    a.src = audioAsset.url;
+    a.src = AUDIO_SRC;
     a.loop = true;
     a.preload = "auto";
     a.crossOrigin = "anonymous";
-    (a as any).playsInline = true;
+    (a as HTMLAudioElement & { playsInline?: boolean }).playsInline = true;
     a.setAttribute("playsinline", "");
     a.setAttribute("webkit-playsinline", "");
-    a.volume = 1; // iOS ignores this; we control via WebAudio gain
+    a.volume = Math.max(prefs.volume || INITIAL_VOLUME, 0.05);
+    a.muted = false;
     audioRef.current = a;
 
     // If user previously enabled it, surface the gesture hint so first tap starts audio
@@ -52,55 +54,19 @@ const AmbientPlayer = () => {
       a.pause();
       audioRef.current = null;
       if (fadeRef.current) window.clearInterval(fadeRef.current);
-      if (ctxRef.current) {
-        ctxRef.current.close().catch(() => {});
-        ctxRef.current = null;
-        gainRef.current = null;
-      }
-      wiredRef.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const ensureGraph = () => {
-    const a = audioRef.current;
-    if (!a) return null;
-    if (!ctxRef.current) {
-      const Ctx: typeof AudioContext =
-        (window as any).AudioContext || (window as any).webkitAudioContext;
-      if (!Ctx) return null;
-      ctxRef.current = new Ctx();
-    }
-    const ctx = ctxRef.current!;
-    if (!gainRef.current) {
-      gainRef.current = ctx.createGain();
-      gainRef.current.gain.value = 0;
-      gainRef.current.connect(ctx.destination);
-    }
-    if (!wiredRef.current) {
-      try {
-        const src = ctx.createMediaElementSource(a);
-        src.connect(gainRef.current);
-        wiredRef.current = true;
-      } catch {
-        // already wired
-        wiredRef.current = true;
-      }
-    }
-    return { ctx, gain: gainRef.current };
-  };
-
   const fadeTo = (target: number, onDone?: () => void) => {
-    const gain = gainRef.current;
     const a = audioRef.current;
     if (fadeRef.current) window.clearInterval(fadeRef.current);
-    const start = gain ? gain.gain.value : a?.volume ?? 0;
+    const start = a?.volume ?? 0;
     const startTime = performance.now();
     fadeRef.current = window.setInterval(() => {
       const t = Math.min(1, (performance.now() - startTime) / FADE_MS);
       const v = start + (target - start) * t;
-      if (gain) gain.gain.value = v;
-      else if (a) a.volume = v;
+      if (a) a.volume = v;
       if (t >= 1) {
         if (fadeRef.current) window.clearInterval(fadeRef.current);
         fadeRef.current = null;
@@ -112,15 +78,16 @@ const AmbientPlayer = () => {
   // Live volume change while playing
   useEffect(() => {
     if (!enabled || fadeRef.current) return;
-    if (gainRef.current) gainRef.current.gain.value = volume;
-    else if (audioRef.current) audioRef.current.volume = volume;
+    if (audioRef.current) audioRef.current.volume = volume;
   }, [volume, enabled]);
 
   // Persist
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ enabled, volume }));
-    } catch {}
+    } catch {
+      return;
+    }
   }, [enabled, volume]);
 
   const handleToggle = () => {
@@ -135,20 +102,21 @@ const AmbientPlayer = () => {
       return;
     }
 
-    // Start — must run synchronously inside the gesture for iOS
-    const graph = ensureGraph();
-    if (graph?.ctx.state === "suspended") {
-      graph.ctx.resume().catch(() => {});
-    }
-    if (graph?.gain) graph.gain.gain.value = 0;
-    else a.volume = 0;
+    // Start — play() must run directly inside the tap/click gesture for iOS/Safari.
+    const target = Math.max(volumeRef.current || INITIAL_VOLUME, 0.05);
+    if (fadeRef.current) window.clearInterval(fadeRef.current);
+    fadeRef.current = null;
+    a.src = AUDIO_SRC;
+    a.loop = true;
+    a.muted = false;
+    a.volume = target;
 
-    const target = volumeRef.current || INITIAL_VOLUME;
     const p = a.play();
     const onOk = () => {
+      a.volume = target;
+      setVolume(target);
       setEnabled(true);
       setNeedsGesture(false);
-      fadeTo(target);
     };
     if (p && typeof p.then === "function") {
       p.then(onOk).catch(() => {
@@ -158,6 +126,20 @@ const AmbientPlayer = () => {
     } else {
       onOk();
     }
+  };
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    ignoreClickRef.current = true;
+    handleToggle();
+    window.setTimeout(() => {
+      ignoreClickRef.current = false;
+    }, 500);
+  };
+
+  const handleClick = () => {
+    if (ignoreClickRef.current) return;
+    handleToggle();
   };
 
   const showPulse = enabled || needsGesture;
@@ -192,7 +174,8 @@ const AmbientPlayer = () => {
         </div>
       )}
       <button
-        onClick={handleToggle}
+        onPointerDown={handlePointerDown}
+        onClick={handleClick}
         aria-label={enabled ? "Silenciar música ambiente" : "Activar experiencia sonora"}
         title={enabled ? "Silenciar" : "🎨 Activar experiencia sonora"}
         className={`relative h-12 w-12 rounded-full border border-border bg-background/90 backdrop-blur-md shadow-md flex items-center justify-center transition-all hover:scale-105 hover:bg-primary/10 ${
