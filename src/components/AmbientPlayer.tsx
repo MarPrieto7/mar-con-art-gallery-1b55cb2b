@@ -13,7 +13,9 @@ const loadPrefs = (): Saved => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return { enabled: false, volume: INITIAL_VOLUME, ...JSON.parse(raw) };
-  } catch {}
+  } catch {
+    return { enabled: false, volume: INITIAL_VOLUME };
+  }
   return { enabled: false, volume: INITIAL_VOLUME };
 };
 
@@ -38,7 +40,7 @@ const AmbientPlayer = () => {
     a.loop = true;
     a.preload = "auto";
     a.crossOrigin = "anonymous";
-    (a as any).playsInline = true;
+    (a as HTMLAudioElement & { playsInline?: boolean }).playsInline = true;
     a.setAttribute("playsinline", "");
     a.setAttribute("webkit-playsinline", "");
     a.volume = Math.max(prefs.volume || INITIAL_VOLUME, 0.05);
@@ -83,7 +85,9 @@ const AmbientPlayer = () => {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ enabled, volume }));
-    } catch {}
+    } catch {
+      return;
+    }
   }, [enabled, volume]);
 
   const handleToggle = () => {
