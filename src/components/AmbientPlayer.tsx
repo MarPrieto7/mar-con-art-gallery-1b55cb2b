@@ -19,23 +19,41 @@ const loadPrefs = (): Saved => {
 const AmbientPlayer = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const fadeRef = useRef<number | null>(null);
+  const volumeRef = useRef<number>(INITIAL_VOLUME);
   const [prefs] = useState<Saved>(loadPrefs);
-  const [enabled, setEnabled] = useState(prefs.enabled);
+  const [enabled, setEnabled] = useState(false);
   const [volume, setVolume] = useState(prefs.volume);
   const [showSlider, setShowSlider] = useState(false);
   const [needsGesture, setNeedsGesture] = useState(false);
 
-  // Init audio element once
+  volumeRef.current = volume > 0 ? volume : INITIAL_VOLUME;
+
+  // Init audio element once + attempt autoplay if previously enabled
   useEffect(() => {
     const a = new Audio(audioAsset.url);
     a.loop = true;
     a.preload = "auto";
     a.volume = 0;
     audioRef.current = a;
+
+    if (prefs.enabled) {
+      const p = a.play();
+      if (p && typeof p.then === "function") {
+        p.then(() => {
+          setEnabled(true);
+          fadeTo(volumeRef.current);
+        }).catch(() => {
+          setNeedsGesture(true);
+        });
+      }
+    }
+
     return () => {
       a.pause();
       audioRef.current = null;
+      if (fadeRef.current) window.clearInterval(fadeRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fadeTo = (target: number, onDone?: () => void) => {
@@ -55,29 +73,6 @@ const AmbientPlayer = () => {
     }, 30) as unknown as number;
   };
 
-  // React to enabled changes
-  useEffect(() => {
-    const a = audioRef.current;
-    if (!a) return;
-    if (enabled) {
-      const p = a.play();
-      if (p && typeof p.then === "function") {
-        p.then(() => {
-          setNeedsGesture(false);
-          fadeTo(volume);
-        }).catch(() => {
-          setNeedsGesture(true);
-        });
-      } else {
-        fadeTo(volume);
-      }
-    } else {
-      setNeedsGesture(false);
-      fadeTo(0, () => a.pause());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled]);
-
   // Live volume change while playing
   useEffect(() => {
     const a = audioRef.current;
@@ -93,19 +88,38 @@ const AmbientPlayer = () => {
   }, [enabled, volume]);
 
   const handleToggle = () => {
-    if (needsGesture) {
-      const a = audioRef.current;
-      if (a) {
-        a.play().then(() => {
-          setNeedsGesture(false);
-          setEnabled(true);
-          fadeTo(volume);
-        }).catch(() => {});
-      }
+    const a = audioRef.current;
+    if (!a) return;
+
+    // If currently playing -> pause
+    if (enabled) {
+      fadeTo(0, () => a.pause());
+      setEnabled(false);
+      setNeedsGesture(false);
       return;
     }
-    setEnabled((v) => !v);
+
+    // Not playing: try to start NOW, inside user gesture
+    a.volume = 0;
+    const target = volumeRef.current;
+    const p = a.play();
+    if (p && typeof p.then === "function") {
+      p.then(() => {
+        setEnabled(true);
+        setNeedsGesture(false);
+        fadeTo(target);
+      }).catch(() => {
+        setNeedsGesture(true);
+        setEnabled(false);
+      });
+    } else {
+      setEnabled(true);
+      setNeedsGesture(false);
+      fadeTo(target);
+    }
   };
+
+  const showPulse = enabled || needsGesture;
 
   return (
     <div
@@ -113,7 +127,7 @@ const AmbientPlayer = () => {
       onMouseEnter={() => setShowSlider(true)}
       onMouseLeave={() => setShowSlider(false)}
     >
-      {needsGesture && (
+      {needsGesture && !enabled && (
         <div className="absolute bottom-14 right-0 bg-background/95 backdrop-blur-md border border-border rounded-2xl px-4 py-2.5 shadow-lg max-w-[240px] animate-fade-in">
           <p className="text-xs font-body text-foreground leading-snug">
             🎨 Toca el icono para activar la experiencia sonora
@@ -121,7 +135,7 @@ const AmbientPlayer = () => {
           <span className="absolute -bottom-1.5 right-5 w-3 h-3 rotate-45 bg-background border-r border-b border-border" />
         </div>
       )}
-      {showSlider && enabled && !needsGesture && (
+      {showSlider && enabled && (
         <div className="bg-background/90 backdrop-blur-md border border-border rounded-full px-3 py-2 shadow-md flex items-center gap-2 animate-fade-in">
           <Volume2 size={14} className="text-muted-foreground" />
           <input
@@ -141,13 +155,13 @@ const AmbientPlayer = () => {
         aria-label={enabled ? "Silenciar música ambiente" : "Activar experiencia sonora"}
         title={enabled ? "Silenciar" : "🎨 Activar experiencia sonora"}
         className={`relative h-12 w-12 rounded-full border border-border bg-background/90 backdrop-blur-md shadow-md flex items-center justify-center transition-all hover:scale-105 hover:bg-primary/10 ${
-          enabled && !needsGesture ? "text-primary" : "text-muted-foreground"
+          enabled ? "text-primary" : "text-muted-foreground"
         }`}
       >
-        {enabled && !needsGesture ? <Waves size={20} /> : <VolumeX size={20} />}
-        {(enabled && !needsGesture) || needsGesture ? (
-          <span className={`absolute inset-0 rounded-full border ${needsGesture ? "border-sakura-deep/60" : "border-primary/40"} animate-ping`} />
-        ) : null}
+        {enabled ? <Waves size={20} /> : <VolumeX size={20} />}
+        {showPulse && (
+          <span className={`absolute inset-0 rounded-full border ${needsGesture && !enabled ? "border-sakura-deep/60" : "border-primary/40"} animate-ping`} />
+        )}
       </button>
     </div>
   );
